@@ -1,0 +1,30 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+interface IPizzaDelivery {
+    function deliverPizza() external view returns (uint256);
+}// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "./IPizzaDelivery.sol";
+
+contract PizzaOrder {
+    IPizzaDelivery pizzaDeliveryService;
+
+    uint _latestOrderId;
+    mapping(uint => bytes32) public orderDetails;
+
+
+    constructor(address _deliveryServiceAddress) {
+        pizzaDeliveryService = IPizzaDelivery(_deliveryServiceAddress);
+    }
+
+    function placePizzaOrder(uint256 estimatedDeliveryTime) external {
+        require(estimatedDeliveryTime > 15);
+
+        uint256 actualDeliveryTime = pizzaDeliveryService.deliverPizza();
+        require(actualDeliveryTime <= estimatedDeliveryTime);
+
+        _latestOrderId++;
+    }
+}
